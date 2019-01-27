@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Admin page</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+</head>
+
+<body>
+   
+
+    <div class="container">
+        <div class="row col-md-6 col-md-ofset-3">
+            <form id="adminPage">
+                <div><h1>Admin page</h1></div>
+                <select id='pages'>
+                    <option value="index.html">authors</option>
+                    <option value="genres.html">genres</option>
+                    <option value="tags.html">tags</option>
+                    <option value="descriptions.html">escriptions</option>
+                    <option value="ratings.html">ratings</option>
+                </select>
+                <button type="submit" class="btn-success" id="addSmth">go to</button>
+            </form>
+        </div>
+    </div>
+    <script src="public/js/jquery.min.js"></script>
+    <script scr="public/js/bootstrap.min.js"></script>
+    <script type='text/javascript'></script>
+    <script>
+        let serverUrl = "http://localhost:8080/";
+        // let checker=true;
+        $(document).ready(function () {
+            $('#addSmth').prop('disabled', true);
+            if (checkForBook() == false) {
+                $('#addSmth').prop('disabled', false);
+                $('#pages').append('<option value="books.html">books</option>');
+            }
+            $('#addSmth').click(function () {
+
+
+                let selectedHref = $('#pages').find(':selected').val();
+                document.location.href = selectedHref;
+                window.open(selectedHref);
+                // $(location).attr('href',selectedHref);
+                //var newWindow = window.open('adminPage', '_self', '');
+                // window.close();
+                // close_window('adminPage');
+                // window.close(newWindow);
+                // $(location).attr('href','index.html');
+            });
+        });
+
+        function close_window(url) {
+            var newWindow = window.open('url', '_self', 'true'); //open the current window
+            window.close(url);
+        }
+        function checkForBook() {
+            let count = 0;
+            let res = false;
+           
+            $('#pages > option').each(function () {
+                let myElement = $(this).val() + "";
+                myElement = myElement.substring(0, myElement.lastIndexOf('.'));
+                if (myElement != 'books') {
+                    if (myElement == 'index')
+                        myElement = 'authors';
+
+                    $.get(serverUrl + myElement + "/check", function (data, status) {
+                        if (data) {
+                            count++;
+                        }
+                        console.log("count=" + count);
+                        console.log("length of option=" + $('#pages > option').length);
+                        if (count == ($('#pages>option').length)) {
+                            console.log("true");
+                            this.res = true;
+                            checkSmth(true);
+                        }
+
+                    });
+                }
+            });
+            console.log("my res = "+res);
+            function checkSmth(checker) {res=checker; }
+            return false;
+        }
+        
+
+
+    </script>
+</body>
+
+</html>

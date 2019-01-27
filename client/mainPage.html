@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="public/css/mycss.css">
+
+    <title>main page</title>
+</head>
+
+<body>
+    <div class="navbar navbar-inverse fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse1">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+
+                </button>
+                <a href="" class="navbar-brand">NOVELS ONLINE</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse1">
+                <form class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input type="text" placeholder="Email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" class="form-control" id="password">
+                    </div>
+                    <button type="submit" class="btn btn-success" id="successButton">Enter</button>
+                    <a href="" class="control-group" style="color:cornsilk">Register</a>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="navbar  navbar-default">
+            <div class="navbar-header">
+                <form class="navbar-form">
+                    <div class="form-group">
+                        <span class="navbar-brand">Categories:</span>
+                    </div>
+                    <div class="form-group">
+                        <select id="select1">
+                            <option value="all" class=" form-control">all</option>
+
+                        </select>
+                        <button type="submit" class="btn btn-success" id="searchButtonBySelect">search</button>
+                    </div>
+                </form>
+
+            </div>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="search" placeholder="Search book by name" class="form-control " id="searchByNameInput">
+                </div>
+                <button type="submit" class="btn btn-success" id="searchButtonByFilter">search</button>
+
+            </form>
+        </div>
+    </div>
+    <br />
+    <div class="container  ">
+        <div style="text-align:center">
+            <div class="row ">
+                <button class="btn btn-success back" type="submit" style="align-self:center">
+                    <-</button> <select id="pageSelect">
+
+                        </select>
+                        <button class="btn btn-success forward" type="submit" style="align-self:center">-></button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col products">
+
+            <div class="row">
+                <div class="product">
+                    <div class="col-lg-4 col-md-4 col-sm-3 col-xs-6">
+                        <div class="product-img">
+                            <img src="image2.jpg" alt="">
+                        </div>
+                        <div class="product-rating">
+                            <p>rating</p>
+                            <p>★★★☆☆</p>
+                            <p>(3.0)</p>
+                            <p>terror infinity</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-8 col-sm-9 col-xs-6">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Description:</h3>
+                                <p>“Want to know the meaning of life? Want to live… a real life?”
+                                    The world changes when you click YES. In God’s dimension, you have to keep getting
+                                    stronger,
+                                    keep evolving to survive one horror movie after another.
+                                    Do you kill everyone in your way to reach the end as a lone king?
+                                    Or fight along with your comrades and survive through the support of friends?
+                                    Everything
+                                    was just for staying alive. Until you find the secret of God’s dimension. Who is
+                                    the
+                                    real enemy?</p>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+                                <h3>Genre:</h3>
+                                <p>horror</p>
+                                <h3>Tags:</h3>
+                                <p>aposdd smk fsdm fs mkf</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h3>Author:</h3>
+                                        jitty
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3>Year:</h3>
+                                        2007
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3>Pages:</h3>
+                                        4000
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h3>Price:</h3>
+                                        400
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h3></h3>
+                                        <button class="btn btn-success" type="submit" style="align-self:center">buy</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <script src="public/js/jquery.min.js"></script>
+    <script scr="public/js/bootstrap.min.js"></script>
+    <script scr="public/js/bootstrap.js"></script>
+
+    <script>
+        let serverUrl = 'http://localhost:8080/';
+        let pageServerUrl = "books/page/1";
+        let spanCount = null;
+        //console.log("lala "+spanCount);
+
+        //document.getElementById('rr').addEventListener ("click", function(){getBooksBy('/books/page/2')}, false);
+
+
+        $(document).ready(function () {
+            getBooksBy('books/page/0');
+            getCategories('genres/');
+            getPages('books/page/getPageNumber');
+
+            $("#searchButtonByFilter").click(function (e) {
+                e.preventDefault();
+
+                $(".products").empty();
+                let title = $("#searchByNameInput").val();
+                console.log(title);
+                if (title == "") {
+                    getBooksBy('books/');
+                } else {
+                    getBooksBy('books/search?search=' + title);
+                }
+
+            });
+            $("#pageSelect").change(function (e) {
+                e.preventDefault();
+                let selectedBox = document.getElementById('pageSelect');
+                let selectedBox2 = document.getElementById('pageSelec2');
+                let selectedValue = selectedBox.options[selectedBox.selectedIndex].value;
+
+
+                getBooksBy('books/page/' + selectedValue);
+                $('html,body').animate({ scrollTop: 0 }, 'fast');
+
+            });
+
+            $(".back").click(function (e) {
+                e.preventDefault();
+                let selectedBox = document.getElementById('pageSelect');
+
+                let selectedValue = selectedBox.options[selectedBox.selectedIndex].value;
+                if (selectedValue > 0) {
+                    selectedValue--;
+                    console.log(selectedValue);
+                    getBooksBy('books/page/' + selectedValue);
+                    selectedBox.selectedIndex--;
+
+                    $('html,body').animate({ scrollTop: 0 }, 'fast');
+                }
+
+            });
+            $(".forward").click(function (e) {
+                e.preventDefault();
+                let maxValue = $("#pageSelect option").length;
+                console.log("max " + maxValue);
+                let selectedBox = document.getElementById('pageSelect');
+
+
+                let selectedValue = selectedBox.options[selectedBox.selectedIndex].value;
+                if (maxValue - 1 > selectedValue) {
+                    selectedValue++;
+                    console.log(selectedValue);
+                    getBooksBy('books/page/' + selectedValue);
+                    selectedBox.selectedIndex++;
+
+                    $('html,body').animate({ scrollTop: 0 }, 'fast');
+                } else { }
+
+            });
+
+
+
+
+
+            $("#searchButtonBySelect").click(function (e) {
+                e.preventDefault();
+
+                $(".products").empty();
+                let selectedOption = $("#select1 > option:selected").val();
+                console.log(selectedOption);
+                if (selectedOption == "all") {
+                    getBooksBy('books/');
+                } else {
+                    getBooksBy('books/sgenres/' + selectedOption);
+                }
+                // $.get(serverUrl+"books/sgenres/"+selectedOption,
+                // function(data,status){
+
+                // });
+            });
+        });
+
+
+
+        function getCategories(myKey) {
+            $.ajax({
+                url: serverUrl + myKey,
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    // console.log(response);
+                    $.each(response, function (key, value) {
+                        // let ratingStar=★;
+
+                        $('#select1').append(
+                            `
+                            <option value="${value.nameOfGenre}">${value.nameOfGenre}</option>
+                        
+                        
+                        `
+                        );
+                    });
+                }
+            });
+
+
+        }
+
+        function getPages(myKey) {
+            $.ajax({
+                url: serverUrl + myKey,
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    //console.log(response);
+                    for (var i = 0; i < response; i++) {
+                        console.log(i);
+                        // <button class="btn btn-success" id="btn${i}" type="button" style="align-self:center">${i}</button>
+                        //<a href="javascript:GetBooksBy("/books/page/${i}");">${i}</a>
+                        //<span class="link" onclick="javascript:GetBooksBy("${pageServerUrl}${i}");">Click Me ${i}</span>
+
+                        $('#pageSelect').append(
+                            `
+                            <option value="${i}" >${i}</option>
+                            `
+                        );
+                        $('#pageSelect2').append(
+                            `
+                            <option value="${i}" >${i}</option>
+                            `
+                        );
+
+                    }
+
+
+                }
+            });
+
+        }
+        function getBooksBy(myKey) {
+            $.ajax({
+                url: serverUrl + myKey,
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                    $(".products").empty();
+                    $.each(response, function (key, value) {
+                        // let ratingStar=★;
+
+                        $('.products').append(
+                            `
+                        <div class="row ">
+
+                        <div class="product">
+                            <div class="col-lg-4 col-md-4 col-sm-3 col-xs-6">
+                                <div class="product-img">
+                                    <img src="${value.imageUrl}" alt="">
+                                </div>
+                                <div class="product-rating">
+                                    <p>rating</p>
+                                    <p>${value.rating.titleOfRating}</p>
+                                    <p>(${value.rating.numberOfRating})</p>
+                                    <p>${value.title}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-8 col-sm-9 col-xs-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <h3>Description:</h3>
+                                        <p>${value.description.descriptions}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+
+                                    <div class="col-md-6">
+                                        <h3>Genre:</h3>
+                                        <p>${value.genre.nameOfGenre}</p>
+                                        <h3>Tags:</h3>
+                                        
+                                        
+                                      
+                                        
+                                        <p>${value.tags[0].nameOfTag}
+                                        ${value.tags[1].nameOfTag}
+                                        ${value.tags[2].nameOfTag}
+                                        ${value.tags[3].nameOfTag}
+                                       </p>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <h3>Author:</h3>
+                                                ${value.author.nameOfAuthor}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h3>Year:</h3>
+                                                ${value.year}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h3>Pages:</h3>
+                                                ${value.numberOfPages}
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h3>Price:</h3>
+                                                400
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h3></h3>
+                                                <button class="btn btn-success" type="submit" style="align-self:center">buy</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                `
+                        );
+
+                    });
+
+                }
+
+            })
+
+        }
+
+
+
+
+
+    </script>
+    <script>
+    //  <tr>
+    //                                 <td>${value.bookId}</td>
+    //                                 <td>${value.title}</td>
+    //                                 <td>${value.author.nameOfAuthor}</td>
+    //                                 <td>${value.year}</td>
+    //                                 <td>${value.numberOfPages}</td>
+    //                                 <td>${value.rating.titleOfRating}</td>
+    //                                 <td>${value.genre.nameOfGenre}</td>
+    //                                 <td>${value.tag}</td>
+
+
+    //                                 <td>
+    //                                     <img src="${value.authorImg}" height="100">
+    //                                 </td>
+    //                                 <td>
+    //                                     <input type="file" class="form-control" id="image-${value.authorId}">
+    //                                 </td>    
+    //                             </tr>
+    </script>
+
+</body>
+
+</html>

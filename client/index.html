@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>add author</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row col-md-6 col-md-ofset-3">
+            <form id="addAuthorForm">
+                <div class="form-group">
+                    <label for="">id</label>
+                    <input type="text" class="form-control" id="authorId">
+                </div>
+                <div class="form-group">
+                    <label  for="">name</label>
+                    <input type="text" class="form-control" id="nameOfAuthor">
+                </div>
+                <div class="form-group">
+                    <label for="">email</label>
+                    <input type="email" class="form-control" id="email">
+                    <span id="emailError" class="error text-danger">Email is already in use</span>
+                    <span id="emailSuccess" class="error text-success">You can use this email </span>
+                </div>
+                <button type="submit" class="btn btn-success">add author</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <table class="table table-striped" id="authorsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="public/js/jquery.min.js"></script>
+    <script scr="public/js/bootstrap.min.js"></script>
+    <script>
+        let serverUrl = 'http://localhost:8080/';
+        $(document).ready(function () {
+            getAuthors();
+
+            $('#emailError').hide();
+            $('#emailSuccess').hide();
+            $('#addAuthorForm button').prop('disabled', true);
+
+            $('#email').keyup(function(e){
+                console.log($(this).val());
+                let email = $('#email').val();
+
+                $.get(serverUrl+'authors/check-email?email='+email,
+                function(data,status){
+                    console.log(data);
+                    if(data==true){
+                    $('#emailSuccess').hide();
+                    $('#emailError').show();
+                    $('#addAuthorForm button').prop('disabled', true);
+                }else{
+                    $('#emailSuccess').show();
+                    $('#emailError').hide();
+                    $('#addAuthorForm button').prop('disabled', false);
+                }
+                });
+            })
+            $('#addAuthorForm').submit(function (e) {
+                e.preventDefault();
+               
+                let nameOfAuthor = $('#nameOfAuthor').val();
+                let email = $('#email').val();
+                let authorId = $('#authorId').val();
+
+              // console.log(nameOfAuthor,email,authorId);
+             
+                let author = {
+                    
+                   nameOfAuthor:nameOfAuthor,
+                   email:email,
+                   authorId:authorId
+                };
+                console.log(author);
+                $.ajax({
+                    url: 'http://localhost:8080/authors',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(author),
+                    complete: function(data) {
+                        console.log("sadasd");
+                       if(data.status == 500){
+                           console.log("Error ocurred on server");
+                       }
+                       if(data.status == 201){
+                           $("#addAuthorForm")[0].reset();
+                           $("#authorsTable tbody").empty();
+                          getAuthors();
+                      }
+                    //  getAuthors();
+                    }
+                })
+            });
+            $(document).on('change','#authorsTable tbody input',function(e){
+                console.log(e.target.id);
+                let elementId = e.target.id;
+                let authorId = elementId.split('-')[1];
+                //let authorId2 = elementId.substring(elementId.lastIndexOf('-')+1,elementId.length);
+
+                console.log(authorId);
+                uploadImage(authorId);
+            });
+
+            function uploadImage(authorId){
+                let formData = new FormData();
+                formData.append('image',$('#image-'+authorId)[0].files[0]);
+           
+                $.ajax({
+                   url: serverUrl+'authors/image/'+authorId,
+                   method: 'POST',
+                   data:formData,
+                    contentType:false,
+                    processData:false,
+                    complete:function(data){
+                        getAuthors();
+                    }
+                })
+               // getAuthors();
+            }
+       
+        });
+
+         function getAuthors() {
+                $.ajax({
+                    url: serverUrl + 'authors',
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+                    success: function (response) {
+                        console.log(response);
+                        $.each(response, function (key, value) {
+                            $('#authorsTable tbody').append(
+                                `
+                                <tr>
+                                    <td>${value.authorId}</td>
+                                    <td>${value.nameOfAuthor}</td>
+                                    <td>${value.email}</td>
+                                    <td>
+                                        <img src="${value.authorImg}" height="100">
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" id="image-${value.authorId}">
+                                    </td>    
+                                </tr>
+                                `
+                            );
+                        });
+                    }
+
+                })
+
+            }
+
+    </script>
+</body>
+
+</html>
+

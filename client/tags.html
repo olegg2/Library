@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>add tags</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row col-md-6 col-md-ofset-3">
+            <form id="addTagForm">
+                <div class="form-group">
+                    <label for="">name of tag</label>
+                    <input type="text" class="form-control" id="nameOfTag">
+                </div>
+
+                <button type="submit" class="btn btn-success">add tag</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <table class="table table-striped" id="tagsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+
+        <script src="public/js/jquery.min.js"></script>
+        <script scr="public/js/bootstrap.min.js"></script>
+
+        <script>
+            let serverUrl = 'http://localhost:8080/';
+            $(document).ready(function () {
+                getTags();
+                $('#addTagForm').submit(function (e) {
+                    e.preventDefault();
+                    let nameOfTag = $('#nameOfTag').val();
+                    let tag = {
+                        nameOfTag: nameOfTag
+                    };
+
+
+                    $.ajax({
+                        url: 'http://localhost:8080/tags',
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(tag),
+                        complete: function (data) {
+                            if(data.status == 500){
+                                console.log("Error ocurred on server");
+                            }
+                            if(data.status == 201){
+                               // $('#addTagsForm')[0].reset();
+                               $("#addTagsForm").remove();
+                                $("#tagsTable tbody").empty();
+                                getTags();
+                            }
+
+                        }
+                    })
+
+                });
+                
+
+            });
+            
+            function getTags() {
+                $.ajax({
+                    url: serverUrl + 'tags',
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+                    success: function (response) {
+                        console.log(response);
+                        $.each(response, function (key, value) {
+                            $('#tagsTable tbody').append(
+                                `
+                                <tr>
+                                    <td>${value.tagId}</td>
+                                    <td>${value.nameOfTag}</td>   
+                                </tr>
+                                `
+                            );
+                        });
+                    }
+
+                })
+
+            }
+            
+
+        </script>
+</body>
+
+</html>

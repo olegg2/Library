@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>add book</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row col-md-9 col-md-offset-1">
+            <form id="addBookForm">
+                <div class="form-group">
+                   <h1>Book adding</h1>
+                </div>
+                <div class="form-group">
+                    <label for="">title of book</label>
+                    <input type="text" class="form-control" id="titleOfBook">
+                </div>
+                <div class="row ">
+                <div class="col-md-6">
+                        <select id="authorPage">
+                            <option selected hidden disabled>choose author</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">year of release</label>
+                            <input type="text" class="form-control" id="yearOfRelease">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">number of pages</label>
+                            <input type="text" class="form-control" id="numerOfPages">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row ">
+                        <div class="col-md-3">
+                            <select id="ratingPage">
+                                <option selected hidden disabled>choose rating</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="genrePage">
+                                <option selected hidden disabled>choose genre</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="tagPage">
+                                <option selected hidden disabled>choose tags</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="descriptionPage">
+                                <option selected hidden disabled>choose description</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">add book</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <table class="table table-striped" id="authorsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Year</th>
+                        <th>Number of pages</th>
+                        <th>Rating</th>
+                        <th>Genre</th>
+                        <th>Tags</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="public/js/jquery.min.js"></script>
+    <script scr="public/js/bootstrap.min.js"></script>
+    <script>
+        let serverUrl = 'http://localhost:8080/';
+        $(document).ready(function () {
+            getBooks();
+
+            $('#addBookForm button').prop('disabled', true);
+
+            
+            $('#addBookForm').submit(function (e) {
+                e.preventDefault();
+
+                let titleOfBook = $('#titleOfBook').val();
+                let yearOfRelease = $('#yearOfRelease').val();
+                let numberOfPages = $('#numberOfPages').val();
+                let titleOfRating = $('').val();
+                let authorId = $('').val();
+
+                // console.log(nameOfAuthor,email,authorId);
+
+                let author = {
+
+                    nameOfAuthor: nameOfAuthor,
+                    email: email,
+                    authorId: authorId
+                };
+                console.log(author);
+                $.ajax({
+                    url: 'http://localhost:8080/authors',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(author),
+                    complete: function (data) {
+                        console.log("sadasd");
+                        if (data.status == 500) {
+                            console.log("Error ocurred on server");
+                        }
+                        if (data.status == 201) {
+                            $("#addAuthorForm")[0].reset();
+                            $("#authorsTable tbody").empty();
+                            getAuthors();
+                        }
+                        //  getAuthors();
+                    }
+                })
+            });
+            $(document).on('change', '#authorsTable tbody input', function (e) {
+                console.log(e.target.id);
+                let elementId = e.target.id;
+                let authorId = elementId.split('-')[1];
+                //let authorId2 = elementId.substring(elementId.lastIndexOf('-')+1,elementId.length);
+
+                console.log(authorId);
+                uploadImage(authorId);
+            });
+
+            function uploadImage(authorId) {
+                let formData = new FormData();
+                formData.append('image', $('#image-' + authorId)[0].files[0]);
+
+                $.ajax({
+                    url: serverUrl + 'authors/image/' + authorId,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    complete: function (data) {
+                        getAuthors();
+                    }
+                })
+                // getAuthors();
+            }
+
+        });
+
+        function getBooks() {
+            $.ajax({
+                url: serverUrl + 'books',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                    $.each(response, function (key, value) {
+                        $('#authorsTable tbody').append(
+                            `
+                                <tr>
+                                    <td>${value.bookId}</td>
+                                    <td>${value.title}</td>
+                                    <td>${value.author.nameOfAuthor}</td>
+                                    <td>${value.year}</td>
+                                    <td>${value.numberOfPages}</td>
+                                    <td>${value.rating.titleOfRating}</td>
+                                    <td>${value.genre.nameOfGenre}</td>
+                                    <td>${value.tag}</td>
+
+                                    
+                                    <td>
+                                        <img src="${value.authorImg}" height="100">
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" id="image-${value.authorId}">
+                                    </td>    
+                                </tr>
+                                `
+                        );
+                    });
+                }
+
+            })
+
+        }
+
+    </script>
+</body>
+
+</html>

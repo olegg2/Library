@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add genres</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row col-md-6 col-md-ofset-3">
+            <form id="addGenreForm">
+                <div class="form-group">
+                    <label for="">name of genre</label>
+                    <input type="text" class="form-control" id="nameOfGenre">
+                </div>
+
+                <button type="submit" class="btn btn-success">add genre</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <table class="table table-striped" id="genresTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+
+        <script src="public/js/jquery.min.js"></script>
+        <script scr="public/js/bootstrap.min.js"></script>
+
+        <script>
+            let serverUrl = 'http://localhost:8080/';
+            $(document).ready(function () {
+                getGenres();
+                $('#addGenreForm').submit(function (e) {
+                    e.preventDefault();
+                    let nameOfGenre = $('#nameOfGenre').val();
+                    let genre = {
+                        nameOfGenre: nameOfGenre
+                    };
+
+
+                    $.ajax({
+                        url: 'http://localhost:8080/genres',
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(genre),
+                        complete: function (data) {
+                            if (data.status == 500) {
+                                console.log("Error ocurred on server");
+                            }
+                            if (data.status == 201) {
+                                // $('#addTagsForm')[0].reset();
+                                $("#addGenreForm").remove();
+                                $("#genresTable tbody").empty();
+                                getGenres();
+                            }
+
+                        }
+                    })
+
+                });
+
+
+            });
+
+            function getGenres() {
+                $.ajax({
+                    url: serverUrl + 'genres',
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+                    success: function (response) {
+                        console.log(response);
+                        $.each(response, function (key, value) {
+                            $('#genresTable tbody').append(
+                                `
+                                        <tr>
+                                            <td>${value.genreId}</td>
+                                            <td>${value.nameOfGenre}</td>   
+                                        </tr>
+                                        `
+                            );
+                        });
+                    }
+
+                })
+
+            }
+
+        </script>
+
+</body>
+
+</html>

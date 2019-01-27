@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form id="signupForm">
+                    <h2>Pleace Sign Up</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" id="firstName" class="control-group input-lg" placeholder="First Name">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" id="lastName" class="control-group input-lg" placeholder="Last Name">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="username" class="control-group input-lg" placeholder="Username">
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" id="password" class="control-group input-lg" placeholder="Password">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" id="passwordConfirm" class="control-group input-lg" placeholder="Password Confirm">
+                            </div>
+                        </div>
+
+                    </div>
+                    <span id="message"></span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="submit" value="Register" class="btn btn-primary btn-block btn-lg">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="public/js/jquery.min.js"></script>
+    <script>
+        let serverUrl = 'http://localhost:8080';
+        $(document).ready(function (e) {
+            $('#signupForm input[type="submit"]').prop('disabled', true);
+
+            $('#password, #passwordConfirm').on('keyup',function(e){
+               //// let password=;
+                //let passwordConfirm=;
+            console.log("zapustilos");
+            if($('#password').val()==$('#passwordConfirm').val()){
+                $('#signupForm input[type="submit"]').prop('disabled', false);
+                $('#message').html('passwords are matched').css('color','green');
+                
+            }else{
+                $('#signupForm input[type="submit"]').prop('disabled', true);
+                $('#message').html('passwords are different').css('color','red');
+            }
+
+            });
+            
+            $('#signupForm').submit(function(e){
+                e.preventDefault();
+                signup();
+
+            });
+
+            function signup() {
+                let user = {
+                    firstName: $('#firstName').val(),
+                    lastName: $('#lastName').val(),
+                    username: $('#username').val(),
+                    password: $('#password').val()
+                   // passwordConfirm: $('#paswordConfirm').val()
+                };
+                
+                $.ajax({
+                    url:serverUrl+'user/signup',
+                    method: 'POST',
+                    data: JSON.stringify(user),
+                    contentType: 'application/json',
+                    complete: function(data){
+                        if(data.status = 500){
+                            console.log(user);
+                            console.log("Error");
+                        }
+
+                        if(data.status == 201){
+                            $(location).attr('href','signin.html');
+                        }
+                    }
+                })
+
+
+            }
+          
+        });
+
+    </script>
+</body>
+
+</html>
