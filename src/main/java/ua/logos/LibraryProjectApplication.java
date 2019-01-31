@@ -8,33 +8,46 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.modelmapper.internal.util.ToStringBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cglib.transform.impl.AddDelegateTransformer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ua.logos.entity.AuthorEntity;
 import ua.logos.entity.BookEntity;
 import ua.logos.entity.DescriptionEntity;
 import ua.logos.entity.GenreEntity;
 import ua.logos.entity.RatingEntity;
+import ua.logos.entity.RoleEntity;
 import ua.logos.entity.TagEntity;
+import ua.logos.entity.UserEntity;
+import ua.logos.exception.ResourceNotFoundException;
 import ua.logos.repository.AuthorRepository;
 import ua.logos.repository.BookRepository;
 import ua.logos.repository.DescriptionRepository;
 import ua.logos.repository.GenreRepository;
 import ua.logos.repository.RatingRepository;
+import ua.logos.repository.RoleRepository;
 import ua.logos.repository.TagRepository;
+import ua.logos.repository.UserRepository;
 import ua.logos.utils.ObjectMapperUtils;
 import ua.logos.utils.StringUtils;
 
+
+
+
 @SpringBootApplication
-public class LibraryProjectApplication {
+public class LibraryProjectApplication implements CommandLineRunner {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 	ConfigurableApplicationContext context = SpringApplication.run(LibraryProjectApplication.class, args);
@@ -46,13 +59,54 @@ public class LibraryProjectApplication {
 		addRatings(context);
 		addRandomBooks(context, 32);
 		
-		/*GenreEntity myEntity = new GenreEntity();
-		Field myField = myEntity.getClass().getDeclaredField("nameOfGenre");
-		myField.setAccessible(true);
-		String myString =(String) myField.get(myEntity);
-		System.out.println(myString);
-		*/
+		
 	}
+	
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		if(roleRepository.count() == 0) {
+			RoleEntity entity = new RoleEntity();
+			entity.setName("ADMIN");
+			
+			roleRepository.save(entity);
+			
+			entity = new RoleEntity();
+			entity.setName("USER");
+			
+			roleRepository.save(entity);
+		
+			
+		}
+		if(userRepository.count() == 0) {
+			UserEntity user = new UserEntity();
+			user.setUsername("admin");
+			user.setPassword(passwordEncoder.encode("1234"));
+			
+			RoleEntity role = roleRepository.findByName("ADMIN")
+					.orElseThrow( 
+					() -> new ResourceNotFoundException("Role not found")
+					 
+					);
+			
+			Set<RoleEntity> roles = new HashSet<>();
+			roles.add(role);
+			user.setRoles(roles);
+			
+			userRepository.save(user);
+		}
+		
+	}
+	
+	
+	
+	/////////////////////////////////////////////
 	//add genre +
 	public static void addGenres(ConfigurableApplicationContext context) {
 		List<String> genres= new ArrayList<>();
@@ -286,5 +340,6 @@ public class LibraryProjectApplication {
 		
 	}
 	}
+	
 
 }
