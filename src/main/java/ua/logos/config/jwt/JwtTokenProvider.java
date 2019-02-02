@@ -25,13 +25,15 @@ import ua.logos.config.SecurityConstants;
 public class JwtTokenProvider {
 
 	public String generateTolen(Authentication authentication) {
+		///////pick authorities , make stream ,make map then to string
 		String authorities = authentication.getAuthorities()
 				.stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
+		///////
 		
 		Date now = new Date();
 		Date validity = new Date(now.getTime()+SecurityConstants.ACCESS_TOKEN_VALIDITY_SECONDS);
-		
+ 		
 		return Jwts.builder()
 				.setSubject(authentication.getName())
 				.claim(SecurityConstants.AUTHORITIES_KEY, authorities)
@@ -42,7 +44,7 @@ public class JwtTokenProvider {
 				;
 		
 	};
-	
+	////////////////////////////////////create user with authorities
 	public UsernamePasswordAuthenticationToken getAuthentication(String token, Authentication existingAuth, UserDetails userDetails) {
 		JwtParser jwtParser = Jwts.parser().setSigningKey(SecurityConstants.SIGNIN_KEY);
 		Jws<Claims> claimsJwt = jwtParser.parseClaimsJws(token);
@@ -61,7 +63,7 @@ public class JwtTokenProvider {
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 		
 	}
-	
+	///////////////////////////////////////////get
 	public String getUsernameFromToken(String token) {
 		return getClaimFromToken(token,Claims::getSubject);
 	}
@@ -70,11 +72,17 @@ public class JwtTokenProvider {
 		return getClaimFromToken(token,Claims::getExpiration);
 	}
 	
+	/////////////get all claims
 	private Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser()
 				.setSigningKey(SecurityConstants.SIGNIN_KEY)
 				.parseClaimsJws(token)
 				.getBody();
+	}
+	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+		Claims claims = getAllClaimsFromToken(token);
+		return  claimsResolver.apply(claims);
+		
 	}
 	/////////////!!!!!!!!!date not data ???
 	private Boolean isTokenExpired(String token) {
@@ -82,10 +90,6 @@ public class JwtTokenProvider {
 		return expiration.before(new Date());
 	}
 	
-	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-		Claims claims = getAllClaimsFromToken(token);
-		return  claimsResolver.apply(claims);
-		
-	}
+	
 	
 }

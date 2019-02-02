@@ -16,25 +16,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import ua.logos.config.jwt.JwtAuthenticationEntryPoint;
+
 import ua.logos.config.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
+	//user finder
 	@Autowired
 	public UserDetailsService userDetailsService;
 	
 	@Autowired
 	protected JwtAuthenticationEntryPoint unauthorizedHandler;
 	
+	
 	@Override
 	
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.cors().and().csrf().disable();
-		
+	http.cors().and().csrf().disable();
+ 		
+
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.POST,"/auth/signin").permitAll()
 		.antMatchers(HttpMethod.POST,"/auth/signup").permitAll()
@@ -56,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
 	}
 	
+	@Bean
 	public JwtAuthenticationFilter authenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}

@@ -1,6 +1,6 @@
 package ua.logos.service.impl;
 
-import java.util.HashSet;
+/*import java.util.HashSet; 
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.cloudinary.api.exceptions.AlreadyExists;
 
-import ua.logos.config.jwt.JwtTokenProvider;
+//import ua.logos.config.jwt.JwtTokenProvider;
 import ua.logos.domain.SigninRequest;
 import ua.logos.domain.SignupRequest;
 import ua.logos.entity.RoleEntity;
@@ -23,8 +23,8 @@ import ua.logos.exception.ResourceNotFoundException;
 import ua.logos.repository.RoleRepository;
 import ua.logos.repository.UserRepository;
 import ua.logos.service.AuthService;
-
-@Service
+ */
+/*@Service
 public class AuthServiceImpl implements AuthService {
 
 	@Autowired
@@ -81,4 +81,4 @@ public class AuthServiceImpl implements AuthService {
 		return token;
 	}	
 	
-}
+}*/

@@ -35,23 +35,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		String header = request.getHeader(SecurityConstants.HEADER_NAME); 
 		
 		if(header!= null && header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
-			authToken = header.replaceAll(SecurityConstants.TOKEN_PREFIX, "");
+			authToken = header.replace(SecurityConstants.TOKEN_PREFIX, "");
 			
 			try {
 				username= jwtTokenProvider.getUsernameFromToken(authToken);
 				
 			}catch (Exception e) {
-				// TODO: handle exception
 				System.out.println("Get Username from token exception");
 				e.printStackTrace();
 			}
-			
+		}else {
+				System.out.println("Counld not find Bearer token");
+			}
 			if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username); 
 				
 				if(jwtTokenProvider.validateToken(authToken,userDetails)) {
+					
 					UsernamePasswordAuthenticationToken authentication = 
 							jwtTokenProvider.getAuthentication(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
+					
 					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					System.out.println("User "+ username +" added to security context");
 					SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -61,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			
 			
 			filterChain.doFilter(request, response);
-		}
+		
 	}
 
 }

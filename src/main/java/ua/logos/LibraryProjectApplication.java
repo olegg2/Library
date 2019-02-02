@@ -1,9 +1,10 @@
 package ua.logos;
 
 import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
+//import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,14 +15,14 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.modelmapper.internal.util.ToStringBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+//import org.modelmapper.internal.util.ToStringBuilder;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cglib.transform.impl.AddDelegateTransformer;
+//import org.springframework.cglib.transform.impl.AddDelegateTransformer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ua.logos.entity.AuthorEntity;
 import ua.logos.entity.BookEntity;
@@ -40,14 +41,14 @@ import ua.logos.repository.RatingRepository;
 import ua.logos.repository.RoleRepository;
 import ua.logos.repository.TagRepository;
 import ua.logos.repository.UserRepository;
-import ua.logos.utils.ObjectMapperUtils;
+//import ua.logos.utils.ObjectMapperUtils;
 import ua.logos.utils.StringUtils;
 
 
 
 
 @SpringBootApplication
-public class LibraryProjectApplication implements CommandLineRunner {
+public class LibraryProjectApplication /*implements CommandLineRunner*/ {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 	ConfigurableApplicationContext context = SpringApplication.run(LibraryProjectApplication.class, args);
@@ -61,15 +62,15 @@ public class LibraryProjectApplication implements CommandLineRunner {
 		
 		
 	}
-	
+	/*
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private RoleRepository roleRepository;
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;*/
 	
-	@Override
+	/*@Override
 	public void run(String... args) throws Exception {
 		if(roleRepository.count() == 0) {
 			RoleEntity entity = new RoleEntity();
@@ -102,10 +103,10 @@ public class LibraryProjectApplication implements CommandLineRunner {
 			userRepository.save(user);
 		}
 		
-	}
+	}*/
 	
 	
-	
+	//public static 
 	/////////////////////////////////////////////
 	//add genre +
 	public static void addGenres(ConfigurableApplicationContext context) {
