@@ -1,6 +1,6 @@
-package ua.logos.controller;
+/*package ua.logos.controller;
 
-/*import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,17 +21,18 @@ public class AuthController {
 	@Autowired
 	private AuthService authService;
 	
-	@PostMapping("signup")
+	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody SignupRequest request){
 		authService.signup(request);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@PostMapping("signin")
+	@PostMapping("/signin")
 	public ResponseEntity<?> signin(@RequestBody SigninRequest request){
 		String token = authService.signin(request);
 		
 		return new ResponseEntity<> (new SigninResponse(token),HttpStatus.OK);
 	}
 
-}*/
+}
+*/

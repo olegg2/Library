@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	
 	@Override
-	
+	//filter
 	protected void configure(HttpSecurity http) throws Exception {
 		
 	http.cors().and().csrf().disable();
@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.POST,"/auth/signin").permitAll()
 		.antMatchers(HttpMethod.POST,"/auth/signup").permitAll()
-		.antMatchers("/books").permitAll()
+		
 		
 		.and()
 		.authorizeRequests()
@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
 		http.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
-	
+	//making builder
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());

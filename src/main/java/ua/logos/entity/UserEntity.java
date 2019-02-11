@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -27,11 +28,12 @@ public class UserEntity extends BaseEntity{
 	@Column(nullable= false)
 	private String password;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER)//(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_roles",
 		joinColumns = @JoinColumn(name="user_id"),
 		inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<RoleEntity> roles;
-	
+	    
 
+	
 }

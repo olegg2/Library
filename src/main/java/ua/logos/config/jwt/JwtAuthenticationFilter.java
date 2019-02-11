@@ -39,19 +39,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			
 			try {
 				username= jwtTokenProvider.getUsernameFromToken(authToken);
+				System.out.println("username = "+username);
 				
 			}catch (Exception e) {
 				System.out.println("Get Username from token exception");
 				e.printStackTrace();
 			}
 		}else {
-				System.out.println("Counld not find Bearer token");
+				System.out.println("Could not find Bearer token");
 			}
 			if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username); 
-				
+				System.out.println("user is found");
 				if(jwtTokenProvider.validateToken(authToken,userDetails)) {
-					
+					//make token???
 					UsernamePasswordAuthenticationToken authentication = 
 							jwtTokenProvider.getAuthentication(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
 					
