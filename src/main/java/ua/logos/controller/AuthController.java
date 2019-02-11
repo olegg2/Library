@@ -1,4 +1,4 @@
-/*package ua.logos.controller;
+package ua.logos.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,4 +35,3 @@ public class AuthController {
 	}
 
 }
-*/
