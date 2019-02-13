@@ -33,5 +33,12 @@ public class AuthController {
 		
 		return new ResponseEntity<> (new SigninResponse(token),HttpStatus.OK);
 	}
+	
+	@PostMapping("/getCurrentUsername")
+	public ResponseEntity<?> getCurrentUsername (@RequestBody String token){
+		String username = authService.getUsernameByToken(token);
+		System.out.println(username);
+		return new ResponseEntity<> (username,HttpStatus.OK);
+	}
 
 }

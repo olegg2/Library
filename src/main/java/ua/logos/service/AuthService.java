@@ -10,4 +10,6 @@ public interface AuthService {
 	void signup(SignupRequest request);
 	
 	String signin(SigninRequest request);
+	
+	String getUsernameByToken(String token);
 }

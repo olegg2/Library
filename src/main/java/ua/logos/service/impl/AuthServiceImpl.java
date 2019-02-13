@@ -79,6 +79,16 @@ public class AuthServiceImpl implements AuthService {
 		String token = jwtTokenProvider.generateTolen(authentication);
 		
 		return token;
+	}
+
+	@Override
+	public String getUsernameByToken(String token) {
+		UserEntity entity = userRepository.findByPassword(token);
+		String username=null;
+		if(entity!=null) {
+			username=entity.getUsername();
+		}
+		return username;
 	}	
 	
 } 

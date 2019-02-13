@@ -10,6 +10,7 @@ import ua.logos.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	Optional<UserEntity> findByUsername(String username);
+	UserEntity findByPassword(String password);
 	
 	Boolean existsByUsername (String username);
 }

@@ -22,19 +22,26 @@
                     <span class="icon-bar"></span>
 
                 </button>
-                <a href="" class="navbar-brand">NOVELS ONLINE</a>
+                <a href="/mainPage.html" class="navbar-brand">NOVELS ONLINE</a>
             </div>
 
             <div class="collapse navbar-collapse" id="navbarCollapse1">
                 <form class="navbar-form navbar-right">
-                    <div class="form-group">
-                        <input type="text" placeholder="Email" class="form-control" id="email">
+                    <div id="registerBar">
+                        <div class="form-group">
+                            <input type="text" placeholder="Username" class="form-control" id="username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-control" id="password">
+                        </div>
+                        <button type="submit" class="btn btn-success" id="signinButton">Enter</button>
+                        <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/signup.html"
+                            class="control-group" id="register" style="color:cornsilk">Register</a>
                     </div>
-                    <div class="form-group">
-                        <input type="password" placeholder="Password" class="form-control" id="password">
-                    </div>
-                    <button type="submit" class="btn btn-success" id="successButton">Enter</button>
-                    <a href="" class="control-group" style="color:cornsilk">Register</a>
+                    <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/profile.html" class="control-group"
+                        id="userProfile" style="color:cornsilk">user</a>
+                        <button type="submit" class="btn btn-success" id="logoutButton">logout</button>
+
                 </form>
             </div>
 
@@ -146,7 +153,8 @@
 
                                     <div class="col-md-6">
                                         <h3></h3>
-                                        <button class="btn btn-success" type="submit" style="align-self:center">buy</button>
+                                        <button class="btn btn-success" type="submit" style="align-self:center">add to
+                                            profile</button>
                                     </div>
 
                                 </div>
@@ -175,6 +183,8 @@
         let serverUrl = 'http://localhost:8080/';
         let pageServerUrl = "books/page/1";
         let spanCount = null;
+        let currentUsername=null;
+        let token= null;
         //console.log("lala "+spanCount);
 
         //document.getElementById('rr').addEventListener ("click", function(){getBooksBy('/books/page/2')}, false);
@@ -184,7 +194,28 @@
             getBooksBy('books/page/0');
             getCategories('genres/');
             getPages('books/page/getPageNumber');
+           // $('#userProfile').hide();
 
+
+            token = window.localStorage.getItem('token');
+            console.log(token);
+            if (token != null) {
+                $('#registerBar').hide();
+                $('#userProfile').show();
+                $('#logoutButton').show();
+               // $('#userProfile').text(currentUsername);
+            } else {
+                if (token == null) {
+                    $('#navbarCollapse1').show();
+                    $('#userProfile').hide();
+                    $('#logoutButton').hide();
+                }
+            }
+            //logout
+            $("#logoutButton").click(function (e){
+                window.localStorage.clear();
+            });
+            //search books by name
             $("#searchButtonByFilter").click(function (e) {
                 e.preventDefault();
 
@@ -198,6 +229,7 @@
                 }
 
             });
+            //selected page
             $("#pageSelect").change(function (e) {
                 e.preventDefault();
                 let selectedBox = document.getElementById('pageSelect');
@@ -247,7 +279,7 @@
 
 
 
-
+            //search by genres
             $("#searchButtonBySelect").click(function (e) {
                 e.preventDefault();
 
@@ -264,8 +296,62 @@
 
                 // });
             });
+
+            $('#signinButton').click(function (e) {
+                e.preventDefault();
+                signin();
+
+            });
         });
 
+
+        function signin() {
+            let user = {
+                username: $('#username').val(),
+                password: $('#password').val()
+            }
+            console.log("my user::")
+            console.log(user);
+            $.ajax({
+                url: 'http://localhost:8080/auth/signin', // http://localhost:8080
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(user),
+                complete: function (data) {
+                    if (data.status == 200) {
+                        console.log("in signin is working");
+                        window.localStorage.setItem('token', data.responseJSON.token);
+                        currentUsername = username;
+                        alert('you are logined');
+                        $(location).attr('href', 'mainPage.html');
+
+                    } else {
+                        alert('mistake');
+                    }
+                }
+            });
+
+        }
+
+        function getCurrentUsername() {
+            let currentToken = token;
+            $.ajax({
+                
+
+                url: serverUrl+'auth/getCurrentUsername',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(currentToken),
+                success: function (data) {
+                     console.log(data);
+                   return data;
+                }
+            });
+
+
+        }
 
 
         function getCategories(myKey) {
@@ -273,7 +359,8 @@
                 url: serverUrl + myKey,
                 method: 'GET',
                 dataType: 'json',
-                contantType: 'application/json',
+                contentType: 'application/json',
+
                 success: function (response) {
                     // console.log(response);
                     $.each(response, function (key, value) {
@@ -298,7 +385,7 @@
                 url: serverUrl + myKey,
                 method: 'GET',
                 dataType: 'json',
-                contantType: 'application/json',
+                contentType: 'application/json',
                 success: function (response) {
                     //console.log(response);
                     for (var i = 0; i < response; i++) {
@@ -330,7 +417,7 @@
                 url: serverUrl + myKey,
                 method: 'GET',
                 dataType: 'json',
-                contantType: 'application/json',
+                contentType: 'application/json',
                 success: function (response) {
                     console.log(response);
                     $(".products").empty();
@@ -403,7 +490,7 @@
 
                                             <div class="col-md-6">
                                                 <h3></h3>
-                                                <button class="btn btn-success" type="submit" style="align-self:center">buy</button>
+                                                <button class="btn btn-success" type="submit" style="align-self:center">add to profile</button>
                                             </div>
 
                                         </div>
