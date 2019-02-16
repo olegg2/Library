@@ -38,6 +38,8 @@
                         <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/signup.html"
                             class="control-group" id="register" style="color:cornsilk">Register</a>
                     </div>
+                    <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/adminPage.html" class="control-group"
+                        id="adminProfile" style="color:cornsilk">admin</a>
                     <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/profile.html" class="control-group"
                         id="userProfile" style="color:cornsilk">user</a>
                         <button type="submit" class="btn btn-success" id="logoutButton">logout</button>
@@ -66,7 +68,9 @@
                 </form>
 
             </div>
-            <form class="navbar-form navbar-right">
+
+            <form class="navbar-form navbar-right" style="padding-top: 7px; margin-right: 5px">
+
                 <div class="form-group">
                     <input type="search" placeholder="Search book by name" class="form-control " id="searchByNameInput">
                 </div>
@@ -77,13 +81,13 @@
     </div>
     <br />
     <div class="container  ">
-        <div style="text-align:center">
+        <div style="text-align:center; padding-bottom: 20px">
             <div class="row ">
-                <button class="btn btn-success back" type="submit" style="align-self:center">
-                    <-</button> <select id="pageSelect">
+                <button class="btn btn-success back" type="submit" style="align-self:center; width: 50px;">
+                      <-  </button> <select id="pageSelect">
 
                         </select>
-                        <button class="btn btn-success forward" type="submit" style="align-self:center">-></button>
+                        <button class="btn btn-success forward" type="submit" style="align-self:center; width: 50px;">-></button>
             </div>
         </div>
     </div>
@@ -194,6 +198,7 @@
             getBooksBy('books/page/0');
             getCategories('genres/');
             getPages('books/page/getPageNumber');
+            getCurrentUsername();
            // $('#userProfile').hide();
 
 
@@ -203,6 +208,7 @@
                 $('#registerBar').hide();
                 $('#userProfile').show();
                 $('#logoutButton').show();
+                
                // $('#userProfile').text(currentUsername);
             } else {
                 if (token == null) {
@@ -296,7 +302,7 @@
 
                 // });
             });
-
+            //signin
             $('#signinButton').click(function (e) {
                 e.preventDefault();
                 signin();
@@ -335,18 +341,20 @@
         }
 
         function getCurrentUsername() {
-            let currentToken = token;
+           
             $.ajax({
                 
 
-                url: serverUrl+'auth/getCurrentUsername',
-                method: 'POST',
+                url: serverUrl + 'auth/getCurrentUsername',
+                method: 'GET',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify(currentToken),
-                success: function (data) {
-                     console.log(data);
-                   return data;
+               
+                complete: function (response) {
+
+                    console.log("lala");
+                     console.log(response.responseText);
+                     $('#userProfile').text(response.responseText);
                 }
             });
 

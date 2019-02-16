@@ -1,6 +1,7 @@
 package ua.logos.service.impl;
 
-import java.util.HashSet; 
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,16 +80,25 @@ public class AuthServiceImpl implements AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String token = jwtTokenProvider.generateTolen(authentication);
 		
+		
+		String lala = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.out.println("signin in authService = " + lala);
 		return token;
 	}
 
 	@Override
-	public String getUsernameByToken(String token) {
-		UserEntity entity = userRepository.findByPassword(token);
-		String username=null;
-		if(entity!=null) {
-			username=entity.getUsername();
-		}
+	public String getUsernameByToken() {
+		//
+		//UserDetailsServiceImpl userDetails = 
+		String username =(String) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+			
+	
+		//String username=userDetails.getClass().getName();
+	
+		//Optional<UserEntity> entity = userRepository.findByUsername(username);
+		//System.out.println(entity.get().getRoles());
+		System.out.println("currentPrincipalName = "+username);
 		return username;
 	}	
 	

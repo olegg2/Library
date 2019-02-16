@@ -47,6 +47,13 @@ public class AuthorController {
 		authorService.delete();
 		return new ResponseEntity<Void> (HttpStatus.OK);
 	}
+	@GetMapping("/delete/{name}")
+	private ResponseEntity<Void> deleteSelected(@PathVariable ("name") String name){
+		authorService.deleteSelected(name);
+		return new ResponseEntity<Void> (HttpStatus.OK);	
+		
+	}
+	
 	@PostMapping("image/{authorId}")
 	public ResponseEntity<Void> uploadImage(
 			@PathVariable ("authorId") String authorId,

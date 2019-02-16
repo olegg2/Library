@@ -143,15 +143,15 @@ public class LibraryProjectApplication implements CommandLineRunner {
 	
 	public static void addTags(ConfigurableApplicationContext context) {
 		List<String> tags = new ArrayList<>();
-		tags.add("adopted protaonist");
+		tags.add("adopted protagonist");
 		tags.add("aliens");
 		tags.add("betrayal");
 		tags.add("cunning protagonist");
-		tags.add("time progretion");
+		tags.add("time progration");
 		tags.add("magic");
 		tags.add("matrial arts");
 		tags.add("revenge");
-		tags.add("Lucky protagonist");
+		tags.add("lucky protagonist");
 		tags.add("modern time");
 		StringUtils stringUtils = context.getBean(StringUtils.class);
 		TagRepository tagRepository = context.getBean(TagRepository.class);
@@ -170,8 +170,8 @@ public class LibraryProjectApplication implements CommandLineRunner {
 		List<String> authors= new ArrayList<>();
 		authors.add("Joan Rouling");
 		authors.add("I eat tomatoes");
-		authors.add("Luk Besson");
-		authors.add("Cristofer Paolini");
+		authors.add("Luck Besson");
+		authors.add("Cristopher Paolini");
 		authors.add("The Plagiarist");
 		authors.add("Nayi ZiWenzi");
 		
@@ -198,7 +198,7 @@ public class LibraryProjectApplication implements CommandLineRunner {
 		ratings.put(5,"great");
 		
 		RatingRepository ratingRepository = context.getBean(RatingRepository.class);
-		int i=1;
+		
 		if(ratingRepository.count()==0) {
 			for(Map.Entry<Integer,String> entry: ratings.entrySet()){
 				RatingEntity entity = new RatingEntity();
@@ -276,16 +276,19 @@ public class LibraryProjectApplication implements CommandLineRunner {
 		BookRepository bookRepository = context.getBean(BookRepository.class);
 		TagRepository tagRepository = context.getBean(TagRepository.class);
 		RatingRepository ratingRepository = context.getBean(RatingRepository.class);
-		if(bookRepository.count()==0) {
 		StringUtils stringUtils = context.getBean(StringUtils.class);
+		DescriptionRepository descriptionRepository = context.getBean(DescriptionRepository.class);
+		
+		if(bookRepository.count()==0) {
+		
 		for (int i=0;i<num;i++) {
 			BookEntity book = new BookEntity();
 			book.setImageUrl("https://res.cloudinary.com/cthulhu/image/upload/v1544904206/books/noBook.jpg");
 			book.setTitle("Book "+i);
 			book.setBookId(stringUtils.generate());
-			book.setYear(i);
-			book.setNumberOfPages(i);
-			//book.setImageUrl("www.url.com/"+i);
+			book.setYear(1950+i+1);
+			book.setNumberOfPages(i+1+200);
+			
 			//
 			GenreEntity genre = new GenreEntity();
 			if(i%2==0) {
@@ -323,7 +326,7 @@ public class LibraryProjectApplication implements CommandLineRunner {
 			for(int j =0;j<5;j++) {
 			TagEntity tag = new TagEntity();
 			int number = rand.nextInt((int)tagRepository.count()-1)+1;
-			//System.out.println(number);
+			System.out.println(number);
 			Long number2 = (long) number;
 			tag.setId(number2);
 			tags.add(tag);
@@ -332,18 +335,22 @@ public class LibraryProjectApplication implements CommandLineRunner {
 			
 			//
 			DescriptionEntity description = new DescriptionEntity();
-			description.setId(1L);
+			
+			int numberr = rand.nextInt((int)descriptionRepository.count()-1)+1;
+			Long number2 = (long) numberr;
+			description.setId(number2);
 			//System.out.println(description.getDescriptions());
 			book.setDescription(description);
 			//System.out.println(book.getDescription().getDescriptions());
 			///////////////////
+			
 			RatingEntity rating = new RatingEntity();
-			//Random rand2 = new Random();
-			int number = rand.nextInt((int)ratingRepository.count()-1)+1;
-			Long number2 = (long) number;
+			
+			int number = rand.nextInt((int)descriptionRepository.count()-1)+1;
+			 number2 = (long) number;
 			rating.setId(number2);
 			book.setRating(rating);
-			
+			//
 			bookRepository.save(book);
 			
 		}

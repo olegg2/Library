@@ -14,12 +14,9 @@
     <div class="container">
         <div class="row col-md-6 col-md-ofset-3">
             <form id="addAuthorForm">
+
                 <div class="form-group">
-                    <label for="">id</label>
-                    <input type="text" class="form-control" id="authorId">
-                </div>
-                <div class="form-group">
-                    <label  for="">name</label>
+                    <label for="">name</label>
                     <input type="text" class="form-control" id="nameOfAuthor">
                 </div>
                 <div class="form-group">
@@ -32,6 +29,21 @@
             </form>
         </div>
 
+        <br />
+        <hr />
+        <center><a href="adminPage.html">
+                <-back to admin page->
+            </a></center>
+
+
+        <center>
+            <select id='authorsDelete'>
+                <option disabled>authors</option>
+            </select>
+            <button id="deleteButton" type="submit" class="btn btn-success">delete author</button>
+        </center>
+
+
         <div class="row">
             <table class="table table-striped" id="authorsTable">
                 <thead>
@@ -39,7 +51,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Image</th>
+
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -54,43 +66,53 @@
         let serverUrl = 'http://localhost:8080/';
         $(document).ready(function () {
             getAuthors();
-
+            setAuthorNamesInSelect();
+            //
             $('#emailError').hide();
             $('#emailSuccess').hide();
             $('#addAuthorForm button').prop('disabled', true);
-
-            $('#email').keyup(function(e){
+            //
+            $('#email').keyup(function (e) {
                 console.log($(this).val());
                 let email = $('#email').val();
 
-                $.get(serverUrl+'authors/check-email?email='+email,
-                function(data,status){
-                    console.log(data);
-                    if(data==true){
-                    $('#emailSuccess').hide();
-                    $('#emailError').show();
-                    $('#addAuthorForm button').prop('disabled', true);
-                }else{
-                    $('#emailSuccess').show();
-                    $('#emailError').hide();
-                    $('#addAuthorForm button').prop('disabled', false);
-                }
-                });
-            })
+                $.get(serverUrl + 'authors/check-email?email=' + email,
+                    function (data, status) {
+                        console.log(data);
+                        if (data == true) {
+                            $('#emailSuccess').hide();
+                            $('#emailError').show();
+                            $('#addAuthorForm button').prop('disabled', true);
+                        } else {
+                            $('#emailSuccess').show();
+                            $('#emailError').hide();
+                            $('#addAuthorForm button').prop('disabled', false);
+                        }
+                    });
+            });
+            //////
+
+            $('#deleteButton').click(function (e){
+              
+                deleteAuthorNames();
+             
+            });
+
+
             $('#addAuthorForm').submit(function (e) {
                 e.preventDefault();
-               
+
                 let nameOfAuthor = $('#nameOfAuthor').val();
                 let email = $('#email').val();
-                let authorId = $('#authorId').val();
 
-              // console.log(nameOfAuthor,email,authorId);
-             
+
+                // console.log(nameOfAuthor,email,authorId);
+
                 let author = {
-                    
-                   nameOfAuthor:nameOfAuthor,
-                   email:email,
-                   authorId:authorId
+
+                    nameOfAuthor: nameOfAuthor,
+                    email: email,
+
                 };
                 console.log(author);
                 $.ajax({
@@ -99,82 +121,122 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify(author),
-                    complete: function(data) {
+                    complete: function (data) {
                         console.log("sadasd");
-                       if(data.status == 500){
-                           console.log("Error ocurred on server");
-                       }
-                       if(data.status == 201){
-                           $("#addAuthorForm")[0].reset();
-                           $("#authorsTable tbody").empty();
-                          getAuthors();
-                      }
-                    //  getAuthors();
+                        if (data.status == 500) {
+                            console.log("Error ocurred on server");
+                        }
+                        if (data.status == 201) {
+                            $("#addAuthorForm")[0].reset();
+                            $("#authorsTable tbody").empty();
+                            getAuthors();
+                        }
+                        //  getAuthors();
                     }
                 })
             });
-            $(document).on('change','#authorsTable tbody input',function(e){
+            $(document).on('change', '#authorsTable tbody input', function (e) {
                 console.log(e.target.id);
                 let elementId = e.target.id;
                 let authorId = elementId.split('-')[1];
                 //let authorId2 = elementId.substring(elementId.lastIndexOf('-')+1,elementId.length);
 
                 console.log(authorId);
-                uploadImage(authorId);
+                // uploadImage(authorId);
             });
 
-            function uploadImage(authorId){
-                let formData = new FormData();
-                formData.append('image',$('#image-'+authorId)[0].files[0]);
-           
-                $.ajax({
-                   url: serverUrl+'authors/image/'+authorId,
-                   method: 'POST',
-                   data:formData,
-                    contentType:false,
-                    processData:false,
-                    complete:function(data){
-                        getAuthors();
-                    }
-                })
-               // getAuthors();
-            }
-       
-        });
+            // function uploadImage(authorId){
+            //     let formData = new FormData();
+            //     formData.append('image',$('#image-'+authorId)[0].files[0]);
 
-         function getAuthors() {
-                $.ajax({
-                    url: serverUrl + 'authors',
-                    method: 'GET',
-                    dataType: 'json',
-                    contantType: 'application/json',
-                    success: function (response) {
-                        console.log(response);
-                        $.each(response, function (key, value) {
-                            $('#authorsTable tbody').append(
-                                `
+            //     $.ajax({
+            //        url: serverUrl+'authors/image/'+authorId,
+            //        method: 'POST',
+            //        data:formData,
+            //         contentType:false,
+            //         processData:false,
+            //         complete:function(data){
+            //             getAuthors();
+            //         }
+            //     })
+            // getAuthors();
+            // }
+
+        });
+        /////////////////////////////////////////////////////////////////////////////////////
+        function deleteAuthorNames() {
+            let name = $('#authorsDelete').children("option:selected").val();
+            console.log("selected name of author : " + name);
+            $.ajax({
+                url: serverUrl + 'authors/delete/'+name,
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                
+                complete: function (data) {
+                    if (data.status == 200) {
+                        alert("successfully deleted");
+                        location.reload();
+                    }else {console.log("mistake with deleting")
+                    alert("author is wired with the book and can not be deleted");
+                    }
+
+
+                }
+            });
+        }
+
+        function setAuthorNamesInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'authors',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#authorsDelete').append(
+                            `
+                            <option>${value.nameOfAuthor}</option>
+                        
+                        `
+                        );
+                    });
+
+
+                }
+            });
+        }
+
+
+
+        function getAuthors() {
+            $.ajax({
+                url: serverUrl + 'authors',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                    $.each(response, function (key, value) {
+                        $('#authorsTable tbody').append(
+                            `
                                 <tr>
                                     <td>${value.authorId}</td>
                                     <td>${value.nameOfAuthor}</td>
                                     <td>${value.email}</td>
-                                    <td>
-                                        <img src="${value.authorImg}" height="100">
-                                    </td>
-                                    <td>
-                                        <input type="file" class="form-control" id="image-${value.authorId}">
-                                    </td>    
+                                       
                                 </tr>
                                 `
-                            );
-                        });
-                    }
+                        );
+                    });
+                }
 
-                })
+            })
 
-            }
+        }
 
     </script>
 </body>
 
 </html>
-

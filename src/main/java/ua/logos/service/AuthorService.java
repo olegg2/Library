@@ -24,4 +24,6 @@ public interface AuthorService {
 	boolean checkIfExists();
 	
 	void delete();
+	
+	void deleteSelected(String name);
 }

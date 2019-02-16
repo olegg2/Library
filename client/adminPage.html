@@ -10,23 +10,41 @@
 </head>
 
 <body>
-   
+
 
     <div class="container">
-        <div class="row col-md-6 col-md-ofset-3">
-            <form id="adminPage">
-                <div><h1>Admin page</h1></div>
-                <select id='pages'>
-                    <option value="index.html">authors</option>
-                    <option value="genres.html">genres</option>
-                    <option value="tags.html">tags</option>
-                    <option value="descriptions.html">escriptions</option>
-                    <option value="ratings.html">ratings</option>
-                </select>
-                <button type="submit" class="btn-success" id="addSmth">go to</button>
+        
+            <form id="adminPage ">
+                <center>
+                    <div>
+                        <h1>Admin page</h1>
+                    </div>
+                    <select id='pages'>
+                        <option value="index.html">authors</option>
+                        <option value="genres.html">genres</option>
+                        <option value="tags.html">tags</option>
+                        <option value="descriptions.html">descriptions</option>
+                        <option value="ratings.html">ratings</option>
+                        <option value="users.html">users</option>
+                    </select>
+
+                    <button type="submit" class="btn-success" id="addSmth">go to</button>
+
+
+
+                </center>
             </form>
-        </div>
+       
+
     </div>
+
+    <br />
+    <hr />
+    <center><a href="mainPage.html">
+            <-back to main page->
+        </a></center>
+
+
     <script src="public/js/jquery.min.js"></script>
     <script scr="public/js/bootstrap.min.js"></script>
     <script type='text/javascript'></script>
@@ -34,17 +52,20 @@
         let serverUrl = "http://localhost:8080/";
         // let checker=true;
         $(document).ready(function () {
+            //check 
             $('#addSmth').prop('disabled', true);
             if (checkForBook() == false) {
                 $('#addSmth').prop('disabled', false);
                 $('#pages').append('<option value="books.html">books</option>');
             }
+            ///////////
             $('#addSmth').click(function () {
 
 
                 let selectedHref = $('#pages').find(':selected').val();
                 document.location.href = selectedHref;
                 window.open(selectedHref);
+
                 // $(location).attr('href',selectedHref);
                 //var newWindow = window.open('adminPage', '_self', '');
                 // window.close();
@@ -54,6 +75,9 @@
             });
         });
 
+
+
+        //////////////////////////////////////////////////////////////
         function close_window(url) {
             var newWindow = window.open('url', '_self', 'true'); //open the current window
             window.close(url);
@@ -61,7 +85,7 @@
         function checkForBook() {
             let count = 0;
             let res = false;
-           
+
             $('#pages > option').each(function () {
                 let myElement = $(this).val() + "";
                 myElement = myElement.substring(0, myElement.lastIndexOf('.'));
@@ -84,11 +108,11 @@
                     });
                 }
             });
-            console.log("my res = "+res);
-            function checkSmth(checker) {res=checker; }
+            console.log("my res = " + res);
+            function checkSmth(checker) { res = checker; }
             return false;
         }
-        
+
 
 
     </script>

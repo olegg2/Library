@@ -56,6 +56,15 @@ public class AuthorServiceImpl implements AuthorService {
 	public void delete() {
 		authorRepository.deleteAll();
 		
+		
+	}
+	@Override
+	public void deleteSelected(String name) {
+		
+		Long id = authorRepository.findByNameOfAuthor(name).getId();
+		System.out.println("name of selected author : "+name+" id : " + id);
+		authorRepository.deleteById(id);
+		
 	}
 
 	@Override
@@ -87,6 +96,8 @@ public class AuthorServiceImpl implements AuthorService {
 			else checker=true;
 		return checker;
 	}
+
+	
 
 	
 	

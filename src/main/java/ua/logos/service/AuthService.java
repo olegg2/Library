@@ -11,5 +11,5 @@ public interface AuthService {
 	
 	String signin(SigninRequest request);
 	
-	String getUsernameByToken(String token);
+	String getUsernameByToken();
 }
