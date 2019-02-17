@@ -6,4 +6,7 @@ import ua.logos.entity.TagEntity;
 
 public interface TagRepository extends JpaRepository<TagEntity, Long> {
 
+	TagEntity findByNameOfTag(String name);
+	
+	boolean existsByTagId (String tagId);
 }

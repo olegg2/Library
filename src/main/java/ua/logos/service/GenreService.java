@@ -15,6 +15,7 @@ public interface GenreService {
 	List<GenreDTO> findAllGenres();
 	public boolean checkIfExists();
 	void delete();
+	void deleteSelected(String name);
 	
 	
 	

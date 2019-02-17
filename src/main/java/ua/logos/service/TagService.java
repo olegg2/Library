@@ -15,6 +15,6 @@ public interface TagService {
 	List<TagDTO> findAllTag();
 	public boolean checkIfExists();
 	void delete();
-	
+	void deleteSelected(String name);
 
 }

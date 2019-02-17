@@ -46,4 +46,12 @@ public class TagController {
 		tagService.delete();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	@GetMapping("/delete/{name}")
+	private ResponseEntity<Void> deleteSelected(@PathVariable ("name") String name){
+		tagService.deleteSelected(name);
+		return new ResponseEntity<Void> (HttpStatus.OK);	
+		
+	}
+	
+	
 	}

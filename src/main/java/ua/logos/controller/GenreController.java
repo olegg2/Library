@@ -48,4 +48,10 @@ public class GenreController {
 		genreService.delete();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	@GetMapping("/delete/{name}")
+	private ResponseEntity<Void> deleteSelected(@PathVariable ("name") String name){
+		genreService.deleteSelected(name);
+		return new ResponseEntity<Void> (HttpStatus.OK);	
+		
+	}
 }

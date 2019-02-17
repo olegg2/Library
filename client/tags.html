@@ -10,6 +10,12 @@
 </head>
 
 <body>
+    <center>
+        <div>
+            <h1>Work with tag</h1>
+        </div>
+    </center>
+
     <div class="container">
         <div class="row col-md-6 col-md-ofset-3">
             <form id="addTagForm">
@@ -22,10 +28,18 @@
             </form>
         </div>
 
-        <hr/>
-        <center><a href="adminPage.html"><-back to admin page-></a></center>
-    
-            
+        <hr />
+        <center><a href="adminPage.html">
+                <-back to admin page->
+            </a></center>
+
+        <center>
+            <select id='tagsDelete'>
+                <option disabled>tags</option>
+            </select>
+            <button id="deleteButton" type="submit" class="btn btn-success">delete tags</button>
+        </center>
+
         <div class="row">
             <table class="table table-striped" id="tagsTable">
                 <thead>
@@ -46,6 +60,8 @@
             let serverUrl = 'http://localhost:8080/';
             $(document).ready(function () {
                 getTags();
+                setTagNamesInSelect();
+
                 $('#addTagForm').submit(function (e) {
                     e.preventDefault();
                     let nameOfTag = $('#nameOfTag').val();
@@ -61,12 +77,12 @@
                         contentType: 'application/json',
                         data: JSON.stringify(tag),
                         complete: function (data) {
-                            if(data.status == 500){
+                            if (data.status == 500) {
                                 console.log("Error ocurred on server");
                             }
-                            if(data.status == 201){
-                               // $('#addTagsForm')[0].reset();
-                               $("#addTagsForm").remove();
+                            if (data.status == 201) {
+                                // $('#addTagsForm')[0].reset();
+                                $("#addTagsForm").remove();
                                 $("#tagsTable tbody").empty();
                                 getTags();
                             }
@@ -75,10 +91,61 @@
                     })
 
                 });
-                
+
 
             });
-            
+
+            $('#deleteButton').click(function (e) {
+
+                deleteTagsNames();
+
+            });
+
+            function deleteTagsNames() {
+                let name = $('#tagsDelete').children("option:selected").val();
+                console.log("selected name of tag : " + name);
+                $.ajax({
+                    url: serverUrl + 'tags/delete/' + name,
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+
+                    complete: function (data) {
+                        if (data.status == 200) {
+                            alert("successfully deleted");
+                            location.reload();
+                        } else {
+                            console.log("mistake with deleting")
+                            alert("tag is wired with the book and can not be deleted");
+                        }
+
+
+                    }
+                });
+            }
+
+            function setTagNamesInSelect() {
+
+                $.ajax({
+                    url: serverUrl + 'tags',
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+                    success: function (response) {
+                        $.each(response, function (key, value) {
+                            $('#tagsDelete').append(
+                                `
+                                     <option>${value.nameOfTag}</option>
+        
+                                `
+                            );
+                        });
+
+
+                    }
+                });
+            }
+
             function getTags() {
                 $.ajax({
                     url: serverUrl + 'tags',
@@ -102,7 +169,7 @@
                 })
 
             }
-            
+
 
         </script>
 </body>

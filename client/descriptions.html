@@ -22,10 +22,17 @@
                 <button type="submit" class="btn btn-success">add description</button>
             </form>
         </div>
-        
-        <hr/>
-        <center><a href="adminPage.html"><-back to admin page-></a></center>
-    
+
+        <hr />
+        <center><a href="adminPage.html">
+                <-back to admin page->
+            </a></center>
+        <center>
+            <select id='descriptionsDelete'>
+                <option disabled>descriptions</option>
+            </select>
+            <button id="deleteButton" type="submit" class="btn btn-success">delete descriptions</button>
+        </center>
 
 
         <div class="row">
@@ -47,17 +54,20 @@
         <script>
             let serverUrl = 'http://localhost:8080/';
             $(document).ready(function () {
-                getGenres();
-                $('#addGenreForm').submit(function (e) {
+                getDescriptions();
+                setDescriptionIdsInSelect()
+
+                $('#addDescriptionForm').submit(function (e) {
                     e.preventDefault();
                     let nameOfDescription = $('#nameOfDescription').val();
+                    console.log(nameOfDescription);
                     let description = {
-                        nameOfDescription: nameOfDescription
+                        descriptions: nameOfDescription
                     };
 
 
                     $.ajax({
-                        url: 'http://localhost:8080/genres',
+                        url: 'http://localhost:8080/descriptions',
                         method: 'POST',
                         dataType: 'json',
                         contentType: 'application/json',
@@ -68,9 +78,12 @@
                             }
                             if (data.status == 201) {
                                 // $('#addTagsForm')[0].reset();
-                                $("#addDescriptionForm").remove();
+                                // $("#addDescriptionForm").remove();
+                                alert("successfully added");
+                                location.reload();
                                 $("#descriptionsTable tbody").empty();
                                 getDescriptions();
+
                             }
 
                         }
@@ -81,9 +94,62 @@
 
             });
 
+
+            $('#deleteButton').click(function (e) {
+
+                deleteDescriptionsNames();
+
+            });
+
+            function deleteDescriptionsNames() {
+                let name = $('#descriptionsDelete').children("option:selected").val();
+                console.log("selected id of description : " + name);
+                $.ajax({
+                    url: serverUrl + 'descriptions/delete/' + name,
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+
+                    complete: function (data) {
+                        if (data.status == 200) {
+                            alert("successfully deleted");
+                            location.reload();
+                        } else {
+                            console.log("mistake with deleting")
+                            alert("description is wired with the book and can not be deleted");
+                        }
+
+
+                    }
+                });
+            }
+
+            function setDescriptionIdsInSelect() {
+
+                $.ajax({
+                    url: serverUrl + 'descriptions',
+                    method: 'GET',
+                    dataType: 'json',
+                    contantType: 'application/json',
+                    success: function (response) {
+                        $.each(response, function (key, value) {
+                            $('#descriptionsDelete').append(
+                                `
+                     <option>${value.descriptionId}</option>
+
+                `
+                            );
+                        });
+
+
+                    }
+                });
+            }
+
+
             function getDescriptions() {
                 $.ajax({
-                    url: serverUrl + 'descriptionss',
+                    url: serverUrl + 'descriptions',
                     method: 'GET',
                     dataType: 'json',
                     contantType: 'application/json',

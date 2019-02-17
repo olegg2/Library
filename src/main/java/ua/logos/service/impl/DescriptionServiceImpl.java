@@ -10,17 +10,25 @@ import ua.logos.entity.DescriptionEntity;
 import ua.logos.repository.DescriptionRepository;
 import ua.logos.service.DescriptionService;
 import ua.logos.utils.ObjectMapperUtils;
+import ua.logos.utils.StringUtils;
 @Service
 public class DescriptionServiceImpl implements DescriptionService{
 	@Autowired
 	private DescriptionRepository descriptionRepository;
 	@Autowired
 	private ObjectMapperUtils objectMapper;
-
+	@Autowired
+	private StringUtils stringUtils;
 	@Override
 	public void saveDescription(DescriptionDTO description) {
-		DescriptionEntity entity = objectMapper.map(description, DescriptionEntity.class);
-		descriptionRepository.save(entity);
+		String descriptionId = stringUtils.generate();
+		System.out.println(descriptionId);
+		
+		if(!descriptionRepository.existsByDescriptionId(descriptionId)) {
+			description.setDescriptionId(descriptionId);
+			DescriptionEntity entity = objectMapper.map(description, DescriptionEntity.class);
+			descriptionRepository.save(entity);
+		}
 		
 	}
 
@@ -51,5 +59,15 @@ public class DescriptionServiceImpl implements DescriptionService{
 			else checker=true;
 		return checker;
 	}
+
+	@Override
+	public void deleteSelected(String id) {
+		Long id2 = descriptionRepository.findByDescriptionId(id).getId();
+		System.out.println("name of selected description : "+id+" id : " + id2);
+		descriptionRepository.deleteById(id2);
+		
+	}
+
+	
 
 }

@@ -10,18 +10,25 @@ import ua.logos.entity.TagEntity;
 import ua.logos.repository.TagRepository;
 import ua.logos.service.TagService;
 import ua.logos.utils.ObjectMapperUtils;
+import ua.logos.utils.StringUtils;
 @Service
 public class TagServiceImpl implements TagService{
 	@Autowired
 	private TagRepository tagRepository;
 	@Autowired
 	private ObjectMapperUtils objectMapper;
+	@Autowired
+	private StringUtils stringUtils;
 
 	@Override
-	public void saveTag(TagDTO tag) {
-		TagEntity entity = objectMapper.map(tag, TagEntity.class);
-		tagRepository.save(entity);
+	public void saveTag(TagDTO dto) {
+		String tagId = stringUtils.generate();
 		
+		if(!tagRepository.existsByTagId(tagId)) {
+			dto.setTagId(tagId);
+			TagEntity entity = objectMapper.map(dto, TagEntity.class);
+			tagRepository.save(entity);
+		}
 	}
 
 	@Override
@@ -50,6 +57,13 @@ public class TagServiceImpl implements TagService{
 	public void delete() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void deleteSelected(String name) {
+		Long id = tagRepository.findByNameOfTag(name).getId();
+		System.out.println("name of selected tag : "+name+" id : " + id);
+		tagRepository.deleteById(id);
 	}
 
 }

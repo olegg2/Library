@@ -52,5 +52,11 @@ public class DescriptionController {
 		descriptionService.delete();
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+	@GetMapping("/delete/{id}")
+	private ResponseEntity<Void> deleteSelected(@PathVariable ("id") String id){
+		descriptionService.deleteSelected(id);
+		return new ResponseEntity<Void> (HttpStatus.OK);	
+		
+	}
 
 }

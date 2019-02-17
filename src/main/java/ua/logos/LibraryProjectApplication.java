@@ -346,7 +346,7 @@ public class LibraryProjectApplication implements CommandLineRunner {
 			
 			RatingEntity rating = new RatingEntity();
 			
-			int number = rand.nextInt((int)descriptionRepository.count()-1)+1;
+			int number = rand.nextInt((int)ratingRepository.count()-1)+1;
 			 number2 = (long) number;
 			rating.setId(number2);
 			book.setRating(rating);
