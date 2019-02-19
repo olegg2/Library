@@ -44,6 +44,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 			inputStream.close();
 			
 		}catch (Exception e) {
+			System.out.println("mistake in cloudinary service");
 			e.getMessage();
 		}
 		return (String) result.get("url");

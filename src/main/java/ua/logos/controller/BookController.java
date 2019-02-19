@@ -85,7 +85,7 @@ public class BookController {
 		return new ResponseEntity<List<BookDTO>>(dtos, HttpStatus.ACCEPTED);
 		
 	}
-	//image download
+	//image download 
 	@PostMapping("/{id}/image")
 	public ResponseEntity<Void> saveImg(@PathVariable ("id") Long id ,@RequestParam ("file") MultipartFile file){
 		String fileName=fileStorageService.storeFile(file);
@@ -112,7 +112,7 @@ public class BookController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "inline: filename=\""+resource.getFilename()+"\"")
 				.body(resource);
 	}
-	//upload image for book
+	//upload image for book from cloudinary
 	@PostMapping("/image/{bookId}")
 	public ResponseEntity<Void> uploadImage(
 			@PathVariable ("bookId") String bookId,
@@ -144,6 +144,13 @@ public class BookController {
 	public ResponseEntity<Void> deleteAllBook(){
 		bookService.delete();
 		return new ResponseEntity<Void> (HttpStatus.OK);
+	}
+	
+	@GetMapping("/delete/{name}")
+	private ResponseEntity<Void> deleteSelected(@PathVariable ("name") String name){
+		bookService.deleteSelected(name);
+		return new ResponseEntity<Void> (HttpStatus.OK);	
+		
 	}
 
 }

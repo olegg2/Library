@@ -6,7 +6,7 @@ import lombok.Data;
 import ua.logos.entity.BookEntity;
 @Data
 public class TagDTO {
-	private Long id;
+	private int id;
 	private String tagId;
 	private String nameOfTag;
 	

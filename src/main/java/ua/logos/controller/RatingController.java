@@ -31,12 +31,12 @@ public class RatingController {
 	@GetMapping
 	public ResponseEntity<List<RatingDTO>> getAllRatings (){
 		List<RatingDTO> dtos = ratingService.findAllRatings();
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(dtos,HttpStatus.ACCEPTED);
 	}
 	@GetMapping("/{id}")
 	public ResponseEntity<RatingDTO> getRatingById(@PathVariable ("id") Long id){
 		RatingDTO dto = ratingService.findRatingById(id);
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(dto,HttpStatus.ACCEPTED);
 	}
 	@GetMapping("/check")
 	public ResponseEntity<Boolean> checkIfExists(){

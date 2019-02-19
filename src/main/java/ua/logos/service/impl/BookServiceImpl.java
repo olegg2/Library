@@ -67,6 +67,13 @@ public class BookServiceImpl implements BookService {
 		bookRepository.deleteAll();
 		
 	}
+	@Override
+	public void deleteSelected(String name) {
+		Long id = bookRepository.findByTitle(name).getId();
+		System.out.println("name of selected author : "+name+" id : " + id);
+		bookRepository.deleteById(id);
+	}
+	//
 
 	@Override
 	public void update(BookDTO dto) {
@@ -192,6 +199,7 @@ public class BookServiceImpl implements BookService {
 		List<BookDTO> dtos = objectMapper.mapAll(entities, BookDTO.class);
 		return dtos;
 	}
+	
 	
 	
 	

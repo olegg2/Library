@@ -40,7 +40,7 @@
                     </div>
                     <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/adminPage.html" class="control-group"
                         id="adminProfile" style="color:cornsilk">admin</a>
-                    <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/profile.html" class="control-group"
+                    <a href="C:/Study/MyProject/LibraryProject/LibraryProject/client/adminPage.html" class="control-group"
                         id="userProfile" style="color:cornsilk">user</a>
                         <button type="submit" class="btn btn-success" id="logoutButton">logout</button>
 
@@ -200,6 +200,7 @@
             getPages('books/page/getPageNumber');
             getCurrentUsername();
            // $('#userProfile').hide();
+           $('#adminProfile').hide();
 
 
             token = window.localStorage.getItem('token');

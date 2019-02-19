@@ -15,6 +15,7 @@ JpaSpecificationExecutor<BookEntity>{
 	
 	
 	BookEntity findByBookId(String id);
+	BookEntity findByTitle(String name);
 	boolean existsByBookId(String bookId);
 	
 	//@Query("select b from book_entity b where b.author_id.id = : authorId")

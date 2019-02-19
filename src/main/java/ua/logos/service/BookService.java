@@ -20,6 +20,7 @@ public interface BookService {
 	void update(BookDTO dto);
 	
 	void delete();
+	void deleteSelected(String name);
 	//////////////////
 	List<BookDTO> findBookByAuthorId(Long id);
 	

@@ -132,6 +132,7 @@
                             console.log("Error ocurred on server");
                         }
                         if (data.status == 201) {
+                            alert('successfully added');
                             $("#addAuthorForm")[0].reset();
                             $("#authorsTable tbody").empty();
                             getAuthors();
@@ -147,25 +148,25 @@
                 //let authorId2 = elementId.substring(elementId.lastIndexOf('-')+1,elementId.length);
 
                 console.log(authorId);
-                // uploadImage(authorId);
+                 uploadImage(authorId);
             });
 
-            // function uploadImage(authorId){
-            //     let formData = new FormData();
-            //     formData.append('image',$('#image-'+authorId)[0].files[0]);
+             function uploadImage(authorId){
+                let formData = new FormData();
+                formData.append('image',$('#image-'+authorId)[0].files[0]);
 
-            //     $.ajax({
-            //        url: serverUrl+'authors/image/'+authorId,
-            //        method: 'POST',
-            //        data:formData,
-            //         contentType:false,
-            //         processData:false,
-            //         complete:function(data){
-            //             getAuthors();
-            //         }
-            //     })
-            // getAuthors();
-            // }
+                $.ajax({
+                   url: serverUrl+'authors/image/'+authorId,
+                   method: 'POST',
+                   data:formData,
+                    contentType:false,
+                    processData:false,
+                    complete:function(data){
+                        getAuthors();
+                    }
+                })
+            getAuthors();
+            }
 
         });
         /////////////////////////////////////////////////////////////////////////////////////
@@ -231,8 +232,7 @@
                                     <td>${value.authorId}</td>
                                     <td>${value.nameOfAuthor}</td>
                                     <td>${value.email}</td>
-                                       
-                                </tr>
+                                   
                                 `
                         );
                     });

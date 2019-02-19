@@ -15,15 +15,15 @@
         <div class="row col-md-9 col-md-offset-1">
             <form id="addBookForm">
                 <div class="form-group">
-                   <h1>Book adding</h1>
+                    <h1>Book adding</h1>
                 </div>
                 <div class="form-group">
                     <label for="">title of book</label>
                     <input type="text" class="form-control" id="titleOfBook">
                 </div>
                 <div class="row ">
-                <div class="col-md-6">
-                        <select id="authorPage">
+                    <div class="col-md-6">
+                        <select id="authorSelect">
                             <option selected hidden disabled>choose author</option>
                         </select>
                     </div>
@@ -38,29 +38,29 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">number of pages</label>
-                            <input type="text" class="form-control" id="numerOfPages">
+                            <input type="text" class="form-control" id="numberOfPages">
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="row ">
                         <div class="col-md-3">
-                            <select id="ratingPage">
+                            <select id="ratingSelect">
                                 <option selected hidden disabled>choose rating</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select id="genrePage">
+                            <select id="genreSelect">
                                 <option selected hidden disabled>choose genre</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select id="tagPage">
-                                <option selected hidden disabled>choose tags</option>
+                            <select multiple id="tagSelect">
+                                <option  hidden disabled>choose tags</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select id="descriptionPage">
+                            <select id="descriptionSelect">
                                 <option selected hidden disabled>choose description</option>
                             </select>
                         </div>
@@ -71,20 +71,29 @@
             </form>
         </div>
 
+        <center>
+            <select id='booksDelete'>
+                <option disabled>books</option>
+            </select>
+            <button id="deleteButton" type="submit" class="btn btn-success">delete books</button>
+        </center>
 
-        <hr/>
-        <center><a href="adminPage.html"><-back to admin page-></a></center>
-    
+
+        <hr />
+        <center><a href="adminPage.html">
+                <-back to admin page->
+            </a></center>
+
 
         <div class="row">
-            <table class="table table-striped" id="authorsTable">
+            <table class="table table-striped" id="booksTable">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Title</th>
                         <th>Author</th>
                         <th>Year</th>
-                        <th>Number of pages</th>
+                        <th>Pages</th>
                         <th>Rating</th>
                         <th>Genre</th>
                         <th>Tags</th>
@@ -103,77 +112,291 @@
         let serverUrl = 'http://localhost:8080/';
         $(document).ready(function () {
             getBooks();
+            setAuthorNamesInSelect();
+            setGenresInSelect();
+            setRatingsInSelect();
+            setTagsInSelect();
+            setDescriptionsInSelect();
+            setBooksInSelect();
+            ///////////////////////////////////////////////////////////////
+            // $('#addBookForm button').prop('disabled', true);
 
-            $('#addBookForm button').prop('disabled', true);
-
-            
+            //////////////////////////////////////          
             $('#addBookForm').submit(function (e) {
                 e.preventDefault();
 
                 let titleOfBook = $('#titleOfBook').val();
                 let yearOfRelease = $('#yearOfRelease').val();
                 let numberOfPages = $('#numberOfPages').val();
-                let titleOfRating = $('').val();
-                let authorId = $('').val();
 
-                // console.log(nameOfAuthor,email,authorId);
+                let authorId = $('#authorSelect').children("option:selected").val();
 
-                let author = {
+                let ratingId = $('#ratingSelect').children("option:selected").val();
+                let genreId = $('#genreSelect').children("option:selected").val();
+                let tagId = $('#tagSelect').children("option:selected").val();
+                let descriptionId = $('#descriptionSelect').children("option:selected").val();
 
-                    nameOfAuthor: nameOfAuthor,
-                    email: email,
-                    authorId: authorId
+               let tags=[];
+               $.each($('#tagSelect option:selected'), function(e){
+                   let num ={
+                       id:$(this).val()
+                       } ;
+                   tags.push(num);
+               });
+                    
+                      // id:$('#tagSelect').children("option:selected").value.val();   
+                
+
+               
+
+                alert("successfully added");
+                let imageurl = "https://res.cloudinary.com/cthulhu/image/upload/v1544904206/books/noBook.jpg";
+                console.log(titleOfBook, descriptionId, genreId, tagId);
+
+               
+                let book = {
+
+                    title: titleOfBook,
+                    imageUrl: imageurl,
+                    year: yearOfRelease,
+                    numberOfPages: numberOfPages,
+                    description: {
+                        id: descriptionId
+                    },
+
+                    author: {
+                        id: authorId
+                    },
+                    genre: {
+                        id: genreId
+                    },
+                    rating: {
+                        id: ratingId
+                    },
+                   tags
+                    
+
                 };
-                console.log(author);
                 $.ajax({
-                    url: 'http://localhost:8080/authors',
+                    url: 'http://localhost:8080/books',
                     method: 'POST',
                     dataType: 'json',
                     contentType: 'application/json',
-                    data: JSON.stringify(author),
+                    data: JSON.stringify(book),
                     complete: function (data) {
                         console.log("sadasd");
                         if (data.status == 500) {
+                            //alert("successfully added");
                             console.log("Error ocurred on server");
                         }
                         if (data.status == 201) {
-                            $("#addAuthorForm")[0].reset();
-                            $("#authorsTable tbody").empty();
-                            getAuthors();
+                            $("#addBookForm")[0].reset();
+                            $("#booksTable tbody").empty();
+                            getBooks();
                         }
                         //  getAuthors();
                     }
                 })
             });
-            $(document).on('change', '#authorsTable tbody input', function (e) {
+            $(document).on('change', '#booksTable tbody input', function (e) {
+
                 console.log(e.target.id);
                 let elementId = e.target.id;
-                let authorId = elementId.split('-')[1];
+                let imageId = elementId.split('-')[1];
                 //let authorId2 = elementId.substring(elementId.lastIndexOf('-')+1,elementId.length);
 
-                console.log(authorId);
-                uploadImage(authorId);
+                console.log(imageId);
+                uploadImage(imageId);
+                location.reload();
             });
-
-            function uploadImage(authorId) {
+            ///////////////////////////////////////////////
+            function uploadImage(bookId) {
                 let formData = new FormData();
-                formData.append('image', $('#image-' + authorId)[0].files[0]);
+                formData.append('image', $('#image-' + bookId)[0].files[0]);
 
                 $.ajax({
-                    url: serverUrl + 'authors/image/' + authorId,
+                    url: serverUrl + 'books/image/' + bookId,
                     method: 'POST',
                     data: formData,
                     contentType: false,
                     processData: false,
                     complete: function (data) {
-                        getAuthors();
+                        getBooks();
                     }
                 })
                 // getAuthors();
             }
 
         });
+        //////////////////////////////////////////////
+        function setAuthorNamesInSelect() {
 
+            $.ajax({
+                url: serverUrl + 'authors',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#authorSelect').append(
+                            `
+                <option value="${value.id}">${value.nameOfAuthor}</option>
+            
+            `
+                        );
+                    });
+
+
+                }
+            });
+        }
+        /////////////
+        function setRatingsInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'ratings',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#ratingSelect').append(
+                            `
+<option value="${value.id}">${value.titleOfRating}</option>
+
+`
+                        );
+                    });
+
+
+                }
+            });
+        }
+        //////////////////////////
+        function setGenresInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'genres',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#genreSelect').append(
+                            `
+<option value="${value.id}">${value.nameOfGenre}</option>
+
+`
+                        );
+                    });
+
+
+                }
+            });
+        }
+        ///////////////////////////////
+        function setTagsInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'tags',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#tagSelect').append(
+                            `
+<option value="${value.id}">${value.nameOfTag}</option>
+
+`
+                        );
+                    });
+
+
+                }
+            });
+        }
+        /////////////////////////////////
+        function setDescriptionsInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'descriptions',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#descriptionSelect').append(
+                            `
+<option value ="${value.id}">${value.descriptionId}</option>
+
+`
+                        );
+                    });
+
+
+                }
+            });
+        }
+        ///////////////////////////////////
+        function setBooksInSelect() {
+
+            $.ajax({
+                url: serverUrl + 'books',
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $('#booksDelete').append(
+                            `
+     <option vslue="${value.id}">${value.title}</option>
+
+`
+                        );
+                    });
+
+
+                }
+            });
+        }
+
+
+        ///////////////////////////////////
+
+
+        $('#deleteButton').click(function (e) {
+
+            deleteBooks();
+
+        });
+
+        function deleteBooks() {
+            let name = $('#booksDelete').children("option:selected").val();
+            console.log("selected id of books : " + name);
+            $.ajax({
+                url: serverUrl + 'books/delete/' + name,
+                method: 'GET',
+                dataType: 'json',
+                contantType: 'application/json',
+
+                complete: function (data) {
+                    if (data.status == 200) {
+                        alert("successfully deleted");
+                        location.reload();
+                    } else {
+                        console.log("mistake with deleting")
+                        alert("book is wired with something and can not be deleted");
+                    }
+
+
+                }
+            });
+        }
+
+
+
+        ///////////////////////////
         function getBooks() {
             $.ajax({
                 url: serverUrl + 'books',
@@ -183,7 +406,7 @@
                 success: function (response) {
                     console.log(response);
                     $.each(response, function (key, value) {
-                        $('#authorsTable tbody').append(
+                        $('#booksTable tbody').append(
                             `
                                 <tr>
                                     <td>${value.bookId}</td>
@@ -193,14 +416,17 @@
                                     <td>${value.numberOfPages}</td>
                                     <td>${value.rating.titleOfRating}</td>
                                     <td>${value.genre.nameOfGenre}</td>
-                                    <td>${value.tag}</td>
+                                    <td>${value.tags[0].nameOfTag}, 
+                                    ${value.tags[1].nameOfTag},
+                                    ${value.tags[2].nameOfTag},
+                                    ${value.tags[3].nameOfTag}</td>
 
                                     
                                     <td>
-                                        <img src="${value.authorImg}" height="100">
+                                        <img src="${value.imageUrl}" height="100">
                                     </td>
                                     <td>
-                                        <input type="file" class="form-control" id="image-${value.authorId}">
+                                        <input type="file" class="form-control" id="image-${value.bookId}">
                                     </td>    
                                 </tr>
                                 `
